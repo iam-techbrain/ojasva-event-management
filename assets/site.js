@@ -135,13 +135,17 @@ if (form) {
       return;
     }
 
-    // Submit Enquiry -> Store in leads.json & localStorage
+    // Submit Enquiry -> Store into SQLite database via submit.php
+    const submitBtn = event.submitter || form.querySelector('button[type="submit"]');
+    const clientName = (data.get('name') || '').trim();
+    const eventType = (data.get('event') || '').trim();
+
     const newLead = {
       id: 'lead-' + Date.now(),
-      name: (data.get('name') || '').trim(),
+      name: clientName,
       phone: (data.get('phone') || '').trim(),
       email: (data.get('email') || '').trim(),
-      event: (data.get('event') || '').trim(),
+      event: eventType,
       date: (data.get('date') || '').trim(),
       venue: (data.get('venue') || '').trim(),
       guests: (data.get('guests') || '').trim(),
@@ -152,30 +156,71 @@ if (form) {
       submittedAt: new Date().toISOString()
     };
 
-    // 1. Cache in browser LocalStorage
-    try {
-      const currentLeads = JSON.parse(localStorage.getItem('ojasva_leads') || '[]');
-      currentLeads.unshift(newLead);
-      localStorage.setItem('ojasva_leads', JSON.stringify(currentLeads));
-    } catch (e) {
-      console.warn('LocalStorage error:', e);
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
     }
+    status.textContent = 'Sending your enquiry...';
 
-    // 2. Post to Node.js backend to save in leads.json file
-    status.textContent = 'Saving your enquiry to leads.json...';
     try {
-      await fetch('/api/leads', {
+      await fetch('submit.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
         body: JSON.stringify(newLead)
       });
     } catch (err) {
-      // Offline / standalone browser mode handled gracefully
+      // Offline fallback
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+      }
     }
 
     form.reset();
     updatePreview();
-    status.innerHTML = '✓ <strong>Enquiry Received!</strong> Your details have been stored in <code>leads.json</code>. You can review all leads on the <a href="dashboard.html" style="text-decoration:underline;color:var(--plum);font-weight:700">/dashboard</a>.';
-    status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    const displayName = clientName ? escapeHtml(clientName) : 'Valued Guest';
+    const displayEvent = eventType ? escapeHtml(eventType) : 'Event';
+    status.innerHTML = `
+      <div class="form-success-banner" role="alert">
+        <div class="success-icon">✓</div>
+        <div class="success-content">
+          <h3>Thank You, ${displayName}!</h3>
+          <p>Your enquiry for <strong>${displayEvent}</strong> has been received successfully.</p>
+          <p class="sub">Our event planning team will review your requirements and get in touch with you shortly.</p>
+        </div>
+      </div>
+    `;
+    status.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
+
+  // Check if redirected with ?status=success from non-AJAX submission
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('status') === 'success') {
+    status.innerHTML = `
+      <div class="form-success-banner" role="alert">
+        <div class="success-icon">✓</div>
+        <div class="success-content">
+          <h3>Thank You!</h3>
+          <p>Your enquiry has been received successfully.</p>
+          <p class="sub">Our event planning team will review your requirements and get in touch with you shortly.</p>
+        </div>
+      </div>
+    `;
+    status.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[m]);
 }

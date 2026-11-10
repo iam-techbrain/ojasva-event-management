@@ -1,0 +1,20 @@
+# Disable Directory Browsing
+Options -Indexes
+
+# Protect SQLite database and sensitive files from direct web access
+<FilesMatch "(database\.sqlite|\.sqlite|\.db|\.md)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Character encoding
+AddDefaultCharset UTF-8
+
+# Default Index
+DirectoryIndex index.html index.php
+
