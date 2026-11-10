@@ -55,9 +55,12 @@
 <ol class="steps"><li><span>01</span><div><h3>Discover</h3><p>We start with your occasion, priorities and budget.</p></div></li><li><span>02</span><div><h3>Design</h3><p>We shape the look, layout and flow around your event.</p></div></li><li><span>03</span><div><h3>Deliver</h3><p>We coordinate the setup and schedule so you can spend time with your guests.</p></div></li></ol>
 </div></section>
 <section class="plan wrap" id="plan" aria-labelledby="plan-title">
-<div><p class="eyebrow"><span></span> START PLANNING</p><h2 id="plan-title">What are we<br><em>celebrating?</em></h2><p>Tell us what you have in mind. Send an enquiry on WhatsApp or download a copy of your brief.</p></div>
+<div><p class="eyebrow"><span></span> START PLANNING</p><h2 id="plan-title">What are we<br><em>celebrating?</em></h2><p>Tell us what you have in mind. Fill out the brief below to submit your enquiry, or download a copy.</p></div>
 <form id="brief-form">
 <div class="fields">
+<label>Your name<input name="name" required placeholder="e.g. Vikram Sharma"></label>
+<label>Phone number<input type="tel" name="phone" required placeholder="e.g. +91 98765 43210"></label>
+<label class="wide">Email address<input type="email" name="email" required placeholder="e.g. vikram@example.com"></label>
 <label>Event type<select name="event" required><option value="">Choose an event type</option><option>Wedding</option><option>Corporate event</option><option>Private celebration</option><option>School or college event</option><option>Festival or public event</option><option>Other</option></select></label>
 <label>Event date <span>(optional)</span><input type="date" name="date"></label>
 <label>City or venue <span>(optional)</span><input name="venue" maxlength="120" placeholder="e.g. Patna"></label>
@@ -68,15 +71,14 @@
 </div>
 <div class="brief-preview" id="brief-preview" hidden><strong>Your event at a glance</strong><p id="brief-summary"></p></div>
 <div class="form-actions">
-<button class="button primary" type="submit" value="whatsapp" disabled>Prepare WhatsApp Enquiry <svg><use href="#arrow"/></svg></button>
+<button class="button primary" type="submit" value="submit" disabled>Submit Enquiry <svg><use href="#arrow"/></svg></button>
 <button class="button secondary" type="submit" value="download" disabled>Download Brief</button>
 </div>
-<div class="enquiry-ready" hidden><p>Review and send your enquiry in WhatsApp.</p><a class="button secondary" id="enquiry-link" target="_blank" rel="noopener noreferrer">Open WhatsApp <svg><use href="#diagonal"/></svg></a></div>
 <p class="form-status" role="status" id="form-status"></p>
 <noscript>Call <a href="tel:+919661553705">+91 96615 53705</a> to discuss your event.</noscript>
 </form>
 </section>
 </main>
-<footer><div class="wrap footer"><a href="#top" class="brand" aria-label="Ojasva Events home"><img class="brand-mark" src="assets/ojasva-monogram.png" width="50" height="50" alt=""><span class="brand-wordmark">OJASVA<small>EVENTS</small></span></a><p>© Ojasva Events</p><nav class="footer-nav" aria-label="Footer navigation"><a href="services.html">Services</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact &amp; Policies</a></nav><a href="#top">Back to top ↑</a></div></footer>
+<footer><div class="wrap footer"><a href="#top" class="brand" aria-label="Ojasva Events home"><img class="brand-mark" src="assets/ojasva-monogram.png" width="50" height="50" alt=""><span class="brand-wordmark">OJASVA<small>EVENTS</small></span></a><p>© Ojasva Events</p><nav class="footer-nav" aria-label="Footer navigation"><a href="services.html">Services</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact &amp; Policies</a><a href="login.html">Admin Portal</a></nav><a href="#top">Back to top ↑</a></div></footer>
 </body>
 </html>

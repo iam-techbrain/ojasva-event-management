@@ -101,10 +101,13 @@ if (form) {
     });
   });
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const data = new FormData(form);
     const fields = [
+      ['Client name', 'name'],
+      ['Phone number', 'phone'],
+      ['Email address', 'email'],
       ['Event type', 'event'],
       ['Event date', 'date'],
       ['City or venue', 'venue'],
@@ -113,26 +116,66 @@ if (form) {
       ['Budget (INR)', 'budget'],
       ['Event details', 'details'],
     ];
-    const brief = ['OJASVA EVENTS', 'Event planning brief', ''];
-    fields.forEach(([label, key]) => {
-      const value = data.get(key).trim();
-      if (value) brief.push(label + ': ' + value);
-    });
-    if (event.submitter?.value !== 'download') {
-      const message = ['Hello Ojasva Events, I’d like to enquire about an event.', '', ...brief.slice(3)].join('\n');
-      enquiryLink.href = 'https://wa.me/919661553705?text=' + encodeURIComponent(message);
-      enquiry.hidden = false;
-      enquiryLink.focus();
+
+    if (event.submitter?.value === 'download') {
+      const brief = ['OJASVA EVENTS', 'Event planning brief', ''];
+      fields.forEach(([label, key]) => {
+        const value = (data.get(key) || '').trim();
+        if (value) brief.push(label + ': ' + value);
+      });
+      const url = URL.createObjectURL(new Blob([brief.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' }));
+      const download = document.createElement('a');
+      download.href = url;
+      download.download = 'Ojasva-Events-Brief.txt';
+      document.body.append(download);
+      download.click();
+      download.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      status.textContent = 'Your event brief is ready to download.';
       return;
     }
-    const url = URL.createObjectURL(new Blob([brief.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' }));
-    const download = document.createElement('a');
-    download.href = url;
-    download.download = 'Ojasva-Events-Brief.txt';
-    document.body.append(download);
-    download.click();
-    download.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    status.textContent = 'Your event brief is ready to download.';
+
+    // Submit Enquiry -> Store in leads.json & localStorage
+    const newLead = {
+      id: 'lead-' + Date.now(),
+      name: (data.get('name') || '').trim(),
+      phone: (data.get('phone') || '').trim(),
+      email: (data.get('email') || '').trim(),
+      event: (data.get('event') || '').trim(),
+      date: (data.get('date') || '').trim(),
+      venue: (data.get('venue') || '').trim(),
+      guests: (data.get('guests') || '').trim(),
+      package: (data.get('package') || '').trim(),
+      budget: (data.get('budget') || '').trim(),
+      details: (data.get('details') || '').trim(),
+      status: 'New',
+      submittedAt: new Date().toISOString()
+    };
+
+    // 1. Cache in browser LocalStorage
+    try {
+      const currentLeads = JSON.parse(localStorage.getItem('ojasva_leads') || '[]');
+      currentLeads.unshift(newLead);
+      localStorage.setItem('ojasva_leads', JSON.stringify(currentLeads));
+    } catch (e) {
+      console.warn('LocalStorage error:', e);
+    }
+
+    // 2. Post to Node.js backend to save in leads.json file
+    status.textContent = 'Saving your enquiry to leads.json...';
+    try {
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newLead)
+      });
+    } catch (err) {
+      // Offline / standalone browser mode handled gracefully
+    }
+
+    form.reset();
+    updatePreview();
+    status.innerHTML = '✓ <strong>Enquiry Received!</strong> Your details have been stored in <code>leads.json</code>. You can review all leads on the <a href="dashboard.html" style="text-decoration:underline;color:var(--plum);font-weight:700">/dashboard</a>.';
+    status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 }

@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#29172a">
+<title>Enquiry Dashboard | Ojasva Events</title>
+<link rel="icon" href="assets/ojasva-monogram.png" type="image/png" sizes="256x256">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.dash-body {
+  background: #f7f2ed;
+  color: var(--ink);
+  min-height: 100vh;
+}
+.dash-header {
+  background: var(--plum);
+  color: #fff8f4;
+  padding: 16px 0;
+  border-bottom: 1px solid #4a284c;
+}
+.dash-header-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.dash-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.dash-brand img {
+  width: 42px;
+  height: 42px;
+}
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.84rem;
+}
+.dash-user code {
+  color: var(--gold);
+  background: #391c3b;
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+.dash-content {
+  padding: 36px 0 60px;
+}
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.metric-card {
+  background: #fffaf6;
+  border: 1px solid var(--border);
+  padding: 22px;
+}
+.metric-card span {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #7b4f5d;
+  margin-bottom: 6px;
+}
+.metric-card strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--plum);
+}
+.metric-card small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+.dash-panel {
+  background: #fffaf6;
+  border: 1px solid var(--border);
+  padding: 24px;
+}
+.controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.search-box {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 260px;
+}
+.search-box input, .search-box select {
+  padding: 8px 12px;
+  border: 1px solid #cbbebc;
+  background: white;
+  font-size: 0.88rem;
+}
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  background: white;
+}
+table.leads-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+table.leads-table th {
+  background: #2b172c;
+  color: #faede6;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 14px;
+  font-weight: 650;
+}
+table.leads-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #ebdcd5;
+  vertical-align: top;
+}
+table.leads-table tr:hover td {
+  background: #fdf6f0;
+}
+.status-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.status-new {
+  background: #ffe3e3;
+  color: #9c1c1c;
+  border: 1px solid #f8b4b4;
+}
+.status-contacted {
+  background: #def7ec;
+  color: #03543f;
+  border: 1px solid #84e1bc;
+}
+.btn-action {
+  background: none;
+  border: 1px solid #d6c5be;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.btn-action:hover {
+  background: var(--plum);
+  color: white;
+}
+.btn-delete {
+  color: #9c1c1c;
+}
+.btn-delete:hover {
+  background: #9c1c1c;
+  color: white;
+  border-color: #9c1c1c;
+}
+.drawer-form {
+  background: #f3eae3;
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.drawer-form h3 {
+  font-size: 1.25rem;
+  margin: 0 0 12px;
+}
+.drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.drawer-grid label {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.drawer-grid input, .drawer-grid select, .drawer-form textarea {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #c9b9b4;
+  background: white;
+  margin-top: 4px;
+  font-size: 0.88rem;
+}
+.details-dialog {
+  width: min(650px, calc(100% - 30px));
+  background: #fffaf6;
+  border: 1px solid var(--border);
+  padding: 24px;
+  color: var(--ink);
+  box-shadow: 0 20px 45px rgba(25, 12, 27, 0.4);
+}
+.details-dialog::backdrop {
+  background: rgba(22, 10, 24, 0.65);
+}
+.details-dialog h2 {
+  font-size: 1.8rem;
+  margin: 0 0 4px;
+}
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: white;
+  padding: 14px;
+  border: 1px solid var(--border);
+  margin: 16px 0;
+  font-size: 0.88rem;
+}
+.details-msg {
+  background: white;
+  padding: 14px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  max-height: 220px;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+@media (max-width: 900px) {
+  .metrics-row { grid-template-columns: 1fr 1fr; }
+  .drawer-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+  .metrics-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body class="dash-body">
+
+<header class="dash-header">
+  <div class="wrap dash-header-wrap">
+    <div class="dash-brand">
+      <img src="assets/ojasva-monogram.png" alt="Ojasva Events">
+      <div>
+        <strong style="font-family:var(--serif);font-size:1.3rem;letter-spacing:0.08em;display:block;line-height:1">OJASVA EVENTS</strong>
+        <span style="font-size:0.65rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase">Enquiry &amp; Leads Dashboard</span>
+      </div>
+    </div>
+
+    <div class="dash-user">
+      <span>Logged in: <code>admin@123</code></span>
+      <a href="index.html" class="button outline" style="padding:7px 14px;min-height:36px;font-size:0.78rem">View Site ↗</a>
+      <button type="button" id="logout-btn" class="button secondary" style="padding:7px 14px;min-height:36px;font-size:0.78rem">Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="dash-content">
+  <div class="wrap">
+    
+    <!-- METRICS CARDS -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <span>Total Enquiries</span>
+        <strong id="stat-total">0</strong>
+        <small>Stored in leads.json</small>
+      </div>
+      <div class="metric-card">
+        <span>Weddings</span>
+        <strong id="stat-weddings">0</strong>
+        <small>Ceremonies &amp; Receptions</small>
+      </div>
+      <div class="metric-card">
+        <span>Corporate</span>
+        <strong id="stat-corporate">0</strong>
+        <small>Conferences &amp; Offsites</small>
+      </div>
+      <div class="metric-card">
+        <span>Celebrations</span>
+        <strong id="stat-private">0</strong>
+        <small>Social &amp; Private Parties</small>
+      </div>
+    </div>
+
+    <!-- CONTROLS & TABLE PANEL -->
+    <div class="dash-panel">
+      
+      <div class="controls-bar">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search by name, phone, email, venue...">
+          <select id="filter-event">
+            <option value="ALL">All Event Types</option>
+            <option value="Wedding">Weddings</option>
+            <option value="Corporate event">Corporate events</option>
+            <option value="Private celebration">Private celebrations</option>
+            <option value="School or college event">School / College</option>
+            <option value="Festival or public event">Festivals / Public</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" id="toggle-manual-btn" class="button secondary" style="padding:9px 14px;min-height:38px;font-size:0.82rem">
+            + Add Enquiry Manually
+          </button>
+          <button type="button" id="download-json-btn" class="button primary" style="padding:9px 14px;min-height:38px;font-size:0.82rem">
+            Download leads.json ↓
+          </button>
+          <button type="button" id="refresh-btn" class="button secondary" style="padding:9px 12px;min-height:38px;font-size:0.82rem" title="Reload data">
+            ↻
+          </button>
+        </div>
+      </div>
+
+      <!-- MANUAL ENTRY DRAWER -->
+      <div id="manual-drawer" class="drawer-form" hidden>
+        <h3>Add Walk-in or Phone Lead</h3>
+        <form id="manual-lead-form">
+          <div class="drawer-grid">
+            <label>Client Name *<input name="name" required placeholder="e.g. Ramesh Kumar"></label>
+            <label>Phone Number *<input type="tel" name="phone" required placeholder="e.g. +91 98765 43210"></label>
+            <label>Email Address *<input type="email" name="email" required placeholder="client@example.com"></label>
+            <label>Event Type *
+              <select name="event" required>
+                <option>Wedding</option>
+                <option>Corporate event</option>
+                <option>Private celebration</option>
+                <option>School or college event</option>
+                <option>Festival or public event</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Target Date<input type="date" name="date"></label>
+            <label>City or Venue<input name="venue" placeholder="e.g. Patna"></label>
+            <label>Estimated Guests<input type="number" name="guests" placeholder="e.g. 200"></label>
+            <label>Package
+              <select name="package">
+                <option value="">Custom</option>
+                <option>Silver</option>
+                <option>Gold</option>
+                <option>Platinum</option>
+              </select>
+            </label>
+            <label>Budget in ₹<input type="number" name="budget" placeholder="e.g. 150000"></label>
+          </div>
+          <label style="display:block;margin-bottom:12px;font-size:0.8rem;font-weight:700">
+            Notes / Event Details
+            <textarea name="details" rows="2" placeholder="Specific requirements, venue discussions, catering..."></textarea>
+          </label>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button type="button" id="cancel-manual-btn" class="button secondary" style="padding:8px 16px;min-height:38px;font-size:0.82rem">Cancel</button>
+            <button type="submit" class="button primary" style="padding:8px 18px;min-height:38px;font-size:0.82rem">Save to leads.json</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- LEADS TABLE -->
+      <div class="table-container">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Contact</th>
+              <th>Event</th>
+              <th>Date &amp; Venue</th>
+              <th>Guests / Pkg</th>
+              <th>Budget (₹)</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leads-body">
+            <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Loading inquiries...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- DETAILS DIALOG -->
+<dialog id="lead-dialog" class="details-dialog">
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <span style="font-size:0.7rem;letter-spacing:0.12em;font-weight:700;color:#7b4f5d;text-transform:uppercase">Enquiry Brief</span>
+    <form method="dialog"><button class="btn-action">Close ✕</button></form>
+  </div>
+  <h2 id="modal-name">Client Name</h2>
+  <div style="font-size:0.78rem;color:var(--muted)" id="modal-time">Received: --</div>
+
+  <div class="details-grid">
+    <div><strong>Phone:</strong> <span id="modal-phone">--</span></div>
+    <div><strong>Email:</strong> <span id="modal-email">--</span></div>
+    <div><strong>Event:</strong> <span id="modal-event">--</span></div>
+    <div><strong>Date:</strong> <span id="modal-date">--</span></div>
+    <div><strong>Venue:</strong> <span id="modal-venue">--</span></div>
+    <div><strong>Guests:</strong> <span id="modal-guests">--</span></div>
+    <div><strong>Package:</strong> <span id="modal-package">--</span></div>
+    <div><strong>Budget:</strong> <span id="modal-budget">--</span></div>
+  </div>
+
+  <label style="font-size:0.78rem;font-weight:700;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Client Notes &amp; Ideas:</label>
+  <div class="details-msg" id="modal-msg">No details provided.</div>
+
+  <div style="display:flex;justify-content:space-between;margin-top:20px;gap:8px">
+    <button type="button" id="modal-toggle-status" class="button primary" style="padding:8px 16px;min-height:36px;font-size:0.8rem">
+      Mark as Contacted
+    </button>
+    <form method="dialog"><button class="button secondary" style="padding:8px 16px;min-height:36px;font-size:0.8rem">Done</button></form>
+  </div>
+</dialog>
+
+<script>
+// Check Authentication
+if (!sessionStorage.getItem('ojasva_admin_session') && localStorage.getItem('ojasva_admin_authenticated') !== 'true') {
+  window.location.href = 'login.html';
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  sessionStorage.removeItem('ojasva_admin_session');
+  localStorage.removeItem('ojasva_admin_authenticated');
+  window.location.href = 'login.html';
+});
+
+let leads = [];
+let currentLead = null;
+
+async function loadLeads() {
+  // 1. Try server API
+  try {
+    const res = await fetch('/api/leads');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        leads = data;
+        localStorage.setItem('ojasva_leads', JSON.stringify(data));
+        render();
+        return;
+      }
+    }
+  } catch (err) {}
+
+  // 2. Try direct leads.json
+  try {
+    const res = await fetch('leads.json');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        leads = data;
+        const local = JSON.parse(localStorage.getItem('ojasva_leads') || '[]');
+        local.forEach(item => {
+          if (!leads.some(l => l.id === item.id)) leads.unshift(item);
+        });
+        render();
+        return;
+      }
+    }
+  } catch (err) {}
+
+  // 3. Fallback: localStorage
+  leads = JSON.parse(localStorage.getItem('ojasva_leads') || '[]');
+  render();
+}
+
+function render() {
+  const search = document.getElementById('search-input').value.toLowerCase().trim();
+  const filter = document.getElementById('filter-event').value;
+
+  // Stats calculation
+  const total = leads.length;
+  const weddings = leads.filter(l => (l.event || '').toLowerCase().includes('wedding')).length;
+  const corporate = leads.filter(l => (l.event || '').toLowerCase().includes('corporate')).length;
+  const privateCount = total - weddings - corporate;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-weddings').textContent = weddings;
+  document.getElementById('stat-corporate').textContent = corporate;
+  document.getElementById('stat-private').textContent = Math.max(0, privateCount);
+
+  // Filter list
+  const filtered = leads.filter(l => {
+    const matchSearch = !search ||
+      (l.name || '').toLowerCase().includes(search) ||
+      (l.phone || '').toLowerCase().includes(search) ||
+      (l.email || '').toLowerCase().includes(search) ||
+      (l.venue || '').toLowerCase().includes(search) ||
+      (l.details || '').toLowerCase().includes(search);
+    const matchFilter = (filter === 'ALL') || (l.event === filter);
+    return matchSearch && matchFilter;
+  });
+
+  const tbody = document.getElementById('leads-body');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--muted)">No inquiries matching your search.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(lead => {
+    const isContacted = lead.status === 'Contacted';
+    const statusClass = isContacted ? 'status-contacted' : 'status-new';
+    const statusLabel = isContacted ? '✓ Contacted' : '● New';
+    const dateFormatted = lead.submittedAt ? new Date(lead.submittedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) : 'Recent';
+
+    return `
+      <tr>
+        <td>
+          <strong style="color:var(--plum);display:block">${lead.name || 'Anonymous'}</strong>
+          <small style="color:var(--muted)">${dateFormatted}</small>
+        </td>
+        <td>
+          <a href="tel:${lead.phone}" style="display:block;font-weight:600">${lead.phone || '—'}</a>
+          <a href="mailto:${lead.email}" style="color:var(--muted);font-size:0.8rem">${lead.email || '—'}</a>
+        </td>
+        <td><strong>${lead.event || 'Other'}</strong></td>
+        <td>
+          <div>${lead.date || 'Date TBD'}</div>
+          <small style="color:var(--muted)">${lead.venue || 'No venue'}</small>
+        </td>
+        <td>
+          <div>${lead.guests ? lead.guests + ' guests' : '—'}</div>
+          <small style="color:#7b4f5d">${lead.package || 'Custom'}</small>
+        </td>
+        <td>${lead.budget ? '₹ ' + Number(lead.budget).toLocaleString('en-IN') : '—'}</td>
+        <td>
+          <span class="status-pill ${statusClass}" onclick="toggleStatus('${lead.id}')" title="Click to toggle status">
+            ${statusLabel}
+          </span>
+        </td>
+        <td>
+          <div style="display:flex;gap:4px">
+            <button class="btn-action" onclick="viewDetails('${lead.id}')">View</button>
+            <button class="btn-action btn-delete" onclick="deleteLead('${lead.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+window.toggleStatus = async function(id) {
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  lead.status = (lead.status === 'Contacted') ? 'New' : 'Contacted';
+  localStorage.setItem('ojasva_leads', JSON.stringify(leads));
+
+  try {
+    await fetch(`/api/leads/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: lead.status })
+    });
+  } catch(e) {}
+  render();
+};
+
+window.deleteLead = async function(id) {
+  if (!confirm('Are you sure you want to delete this enquiry from leads.json?')) return;
+  leads = leads.filter(l => l.id !== id);
+  localStorage.setItem('ojasva_leads', JSON.stringify(leads));
+
+  try {
+    await fetch(`/api/leads/${id}`, { method: 'DELETE' });
+  } catch(e) {}
+  render();
+};
+
+window.viewDetails = function(id) {
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  currentLead = lead;
+
+  document.getElementById('modal-name').textContent = lead.name || 'Anonymous';
+  document.getElementById('modal-time').textContent = 'Submitted: ' + (lead.submittedAt ? new Date(lead.submittedAt).toLocaleString() : 'N/A');
+  document.getElementById('modal-phone').textContent = lead.phone || '—';
+  document.getElementById('modal-email').textContent = lead.email || '—';
+  document.getElementById('modal-event').textContent = lead.event || '—';
+  document.getElementById('modal-date').textContent = lead.date || 'TBD';
+  document.getElementById('modal-venue').textContent = lead.venue || '—';
+  document.getElementById('modal-guests').textContent = lead.guests ? lead.guests + ' guests' : '—';
+  document.getElementById('modal-package').textContent = lead.package || 'Custom';
+  document.getElementById('modal-budget').textContent = lead.budget ? '₹ ' + Number(lead.budget).toLocaleString('en-IN') : '—';
+  document.getElementById('modal-msg').textContent = lead.details || 'No additional details written.';
+
+  const toggleBtn = document.getElementById('modal-toggle-status');
+  toggleBtn.textContent = lead.status === 'Contacted' ? 'Mark as New' : 'Mark as Contacted';
+
+  document.getElementById('lead-dialog').showModal();
+};
+
+document.getElementById('modal-toggle-status').addEventListener('click', () => {
+  if (currentLead) {
+    toggleStatus(currentLead.id);
+    document.getElementById('lead-dialog').close();
+  }
+});
+
+// Download leads.json File in 1-Click
+document.getElementById('download-json-btn').addEventListener('click', () => {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(leads, null, 2));
+  const a = document.createElement('a');
+  a.href = dataStr;
+  a.download = 'leads.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+// Manual Entry Drawer
+const drawer = document.getElementById('manual-drawer');
+document.getElementById('toggle-manual-btn').addEventListener('click', () => {
+  drawer.hidden = !drawer.hidden;
+});
+document.getElementById('cancel-manual-btn').addEventListener('click', () => {
+  drawer.hidden = true;
+});
+
+document.getElementById('manual-lead-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const newLead = {
+    id: 'lead-' + Date.now(),
+    name: form.elements.name.value.trim(),
+    phone: form.elements.phone.value.trim(),
+    email: form.elements.email.value.trim(),
+    event: form.elements.event.value,
+    date: form.elements.date.value,
+    venue: form.elements.venue.value.trim(),
+    guests: form.elements.guests.value.trim(),
+    package: form.elements.package.value,
+    budget: form.elements.budget.value.trim(),
+    details: form.elements.details.value.trim(),
+    status: 'New',
+    submittedAt: new Date().toISOString()
+  };
+
+  leads.unshift(newLead);
+  localStorage.setItem('ojasva_leads', JSON.stringify(leads));
+
+  try {
+    await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newLead)
+    });
+  } catch(e) {}
+
+  form.reset();
+  drawer.hidden = true;
+  render();
+  alert('Enquiry successfully added and saved in leads.json!');
+});
+
+document.getElementById('search-input').addEventListener('input', render);
+document.getElementById('filter-event').addEventListener('change', render);
+document.getElementById('refresh-btn').addEventListener('click', loadLeads);
+
+loadLeads();
+</script>
+
+</body>
+</html>
+
