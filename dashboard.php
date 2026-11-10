@@ -412,8 +412,8 @@ table.leads-table tr:hover td {
     </div>
 
     <div class="dash-user">
+      <a href="index.html" class="button outline" style="padding:7px 14px;min-height:36px;font-size:0.78rem">Home</a>
       <span>Logged in: <code><?= htmlspecialchars($_SESSION['admin_user']) ?></code></span>
-      <a href="index.html" class="button outline" style="padding:7px 14px;min-height:36px;font-size:0.78rem">View Site ↗</a>
       <a href="logout.php" class="button secondary" style="padding:7px 14px;min-height:36px;font-size:0.78rem">Logout</a>
     </div>
   </div>
@@ -486,7 +486,7 @@ table.leads-table tr:hover td {
 
       <!-- MANUAL ENTRY FORM DRAWER -->
       <div id="manual-drawer" class="drawer-form" hidden>
-        <h3>Record Walk-in / Direct Call Lead (SQLite)</h3>
+        <h3>Record Walk-in / Direct Call Lead</h3>
         <form method="POST" action="dashboard.php">
           <input type="hidden" name="action" value="add_manual">
           <div class="drawer-grid">
@@ -659,6 +659,13 @@ function viewDetails(lead) {
   document.getElementById('lead-dialog').showModal();
 }
 </script>
+
+<footer class="dash-footer" style="background:#221323;color:#e8dbe0;padding:24px 0;margin-top:60px;border-top:1px solid rgba(255,255,255,.08);font-size:0.82rem;">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <p style="margin:0">© Ojasva Events Admin Portal</p>
+    <p style="margin:0;color:var(--gold);font-weight:600">Developed by Digi Ritual</p>
+  </div>
+</footer>
 
 </body>
 </html>
